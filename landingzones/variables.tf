@@ -1,9 +1,9 @@
 variable "landingzone" {
-	default = {}
+  default = {}
 }
 
 variable "global_settings" {
-	default = {}
+  default = {}
 }
 
 variable "tfstate_storage_account_name" {
