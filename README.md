@@ -12,7 +12,7 @@ deploy it with Rover, this repo aims to serve two purposes:
 
 # Usage
 From within a Rover environment:
-`````
+
 ```
 git clone https://github.com/brk3/terraform-landingzone-template landingzones/terraform-landingzone-template
 /tf/rover/rover.sh \
