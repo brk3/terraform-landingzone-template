@@ -1,0 +1,5 @@
+# Supplied by rover
+terraform {
+  backend "azurerm" {
+  }
+}
