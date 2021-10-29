@@ -7,6 +7,7 @@
 #   specified in local.landingzone.tfstates for a particular state)
 
 locals {
+  # Grab some of the basic info about this module, as supplied from Rover
   landingzone = {
     current = {
       storage_account_name = var.tfstate_storage_account_name
@@ -20,6 +21,9 @@ locals {
     }
   }
 
+  # Use the above info to infer additional info about each tfstate we need to access, such as it's
+  # resource_group, subscription etc. if not specified in the configuration. This info is passed to
+  # data.terraform_remote_state.remote
   remote_state = {
     azurerm = {
       for key, value in try(var.landingzone.tfstates, {}) : key => {
@@ -34,13 +38,23 @@ locals {
     }
   }
 
-  # At least one state (identified by global_settings_key) in any level should output a
-  # global_settings object. Check for the various locations this can be found and merge together
-  # with any global_settings defined by this module.
+  # A map of global settings is maintained by each module. Grab the global_settings output from the
+  # module identified by global_settings_key, and merge it with any global settings defined by this
+  # module.
   global_settings = merge(
     var.global_settings,
     try(data.terraform_remote_state.remote[var.landingzone.global_settings_key].outputs.objects[var.landingzone.global_settings_key].global_settings, null),
     try(data.terraform_remote_state.remote[var.landingzone.global_settings_key].outputs.global_settings, null),
     try(data.terraform_remote_state.remote[keys(var.landingzone.tfstates)[0]].outputs.global_settings, null)
   )
+
+  # We're now ready to fetch remote objects from other modules. Here we're showing an example of
+  # fetching resource_groups. The pattern is the same for any other remote object.
+  remote = {
+    resource_groups = {
+      for key, value in try(var.landingzone.tfstates, {}) : key => merge(
+        try(data.terraform_remote_state.remote[key].outputs.objects[key].resource_groups, {})
+      )
+    }
+  }
 }

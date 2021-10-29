@@ -1,3 +1,10 @@
+# Vars specific to this module
+variable "settings" {
+  description = "Map of configuration settings for this module."
+  default = {}
+}
+
+# CAF framework vars
 variable "landingzone" {
   description = "Configuration info relating to this landingzone"
   default = {}
