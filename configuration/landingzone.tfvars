@@ -2,7 +2,6 @@
 # * Document how outputs should work
 #   * Also look into / demonstrate combined objects
 # * Document how tags should work
-# * Document how prefix/naming should work
 
 landingzone = {
   # Backend that will be used to store module state
